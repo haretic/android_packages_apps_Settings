@@ -207,7 +207,81 @@ public class SeekBarPreference extends RestrictedPreference
         if (seekBar == null) {
             return false;
         }
+        if (isWheelFocus(v) && onWheelKey(seekBar, keyCode, event)) {
+            return true;
+        }
         return seekBar.onKeyDown(keyCode, event);
+    }
+
+    /** Lets go of a bar the side button grabbed, after a pause in the wheel's turning. */
+    private static final long WHEEL_GRAB_TIMEOUT_MS = 4000;
+    /** Steps closer than this are a spin, which moves the bar a tenth of its range a step. */
+    private static final long WHEEL_GRAB_FAST_STEP_MS = 60;
+    private boolean mWheelGrabbed;
+    private long mWheelLastStep;
+    private SeekBar mWheelBar;
+    private final Runnable mWheelLetGo = () -> setWheelGrabbed(null, false);
+
+    /**
+     * Whether the wheel UI's focus (config_wheelFocus) is on: the side button grabs the bar and
+     * the wheel, turning up and down, sets it.
+     */
+    private static boolean isWheelFocus(View view) {
+        // The view's own resources: they have the framework's overlays, Resources.getSystem()
+        // doesn't, and config_wheelFocus is one
+        final android.content.res.Resources res = view.getResources();
+        final int id = res.getIdentifier("config_wheelFocus", "bool", "android");
+        return id != 0 && res.getBoolean(id) && !view.isInTouchMode();
+    }
+
+    private boolean onWheelKey(SeekBar seekBar, int keyCode, KeyEvent event) {
+        if (!seekBar.isEnabled()) {
+            return false;
+        }
+        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
+            if (event.getRepeatCount() == 0) {
+                setWheelGrabbed(seekBar, !mWheelGrabbed);
+            }
+            return true;
+        }
+        if (!mWheelGrabbed || (keyCode != KeyEvent.KEYCODE_DPAD_UP
+                && keyCode != KeyEvent.KEYCODE_DPAD_DOWN)) {
+            return false;
+        }
+        seekBar.removeCallbacks(mWheelLetGo);
+        seekBar.postDelayed(mWheelLetGo, WHEEL_GRAB_TIMEOUT_MS);
+        final long now = event.getEventTime();
+        final boolean fast = now - mWheelLastStep < WHEEL_GRAB_FAST_STEP_MS;
+        mWheelLastStep = now;
+        // Down, the wheel's clockwise turn, raises it: the bar's own key steps, so every change
+        // goes out as the user's
+        final int arrow = keyCode == KeyEvent.KEYCODE_DPAD_DOWN
+                ? KeyEvent.KEYCODE_DPAD_RIGHT : KeyEvent.KEYCODE_DPAD_LEFT;
+        final int increment = Math.max(1, seekBar.getKeyProgressIncrement());
+        final int steps = fast
+                ? Math.max(1, (seekBar.getMax() - seekBar.getMin()) / 10 / increment) : 1;
+        for (int i = 0; i < steps; i++) {
+            seekBar.onKeyDown(arrow, new KeyEvent(KeyEvent.ACTION_DOWN, arrow));
+        }
+        return true;
+    }
+
+    private void setWheelGrabbed(SeekBar seekBar, boolean grabbed) {
+        if (seekBar != null) {
+            mWheelBar = seekBar;
+        }
+        if (mWheelBar == null || grabbed == mWheelGrabbed) {
+            return;
+        }
+        mWheelBar.removeCallbacks(mWheelLetGo);
+        mWheelGrabbed = grabbed;
+        // The thumb's pressed halo, and the wheel's ring thicker round the row
+        mWheelBar.setPressed(grabbed);
+        if (grabbed) {
+            mWheelBar.postDelayed(mWheelLetGo, WHEEL_GRAB_TIMEOUT_MS);
+            android.widget.Toast.makeText(getContext(), com.android.settings.R.string.wheel_seekbar_grabbed,
+                    android.widget.Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void setMax(int max) {
