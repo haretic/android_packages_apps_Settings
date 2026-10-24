@@ -42,6 +42,7 @@ import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.FeatureFlagUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -80,6 +81,7 @@ import com.android.settingslib.Utils;
 import com.android.settingslib.core.lifecycle.HideNonSystemOverlayMixin;
 import com.android.settingslib.widget.SettingsThemeHelper;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.setupcompat.util.WizardManagerHelper;
 
 import java.net.URISyntaxException;
@@ -115,6 +117,8 @@ public class SettingsHomepageActivity extends FragmentActivity implements
     private Set<HomepageLoadedListener> mLoadedListeners;
     private boolean mIsEmbeddingActivityEnabled;
     private boolean mIsTwoPane;
+    /** The last key down, telling the wheel moving up to the search bar from a first focus. */
+    private int mLastWheelKey;
     // A regular layout shows icons on homepage, whereas a simplified layout doesn't.
     private boolean mIsRegularLayout = true;
 
@@ -401,7 +405,14 @@ public class SettingsHomepageActivity extends FragmentActivity implements
                     View container = findViewById(R.id.app_bar_container);
                     final int top_padding = getResources().getDimensionPixelSize(
                             R.dimen.search_bar_container_top_padding);
-                    container.setPadding(container.getPaddingLeft(), top_padding + insets.top,
+                    // A search bar pulled down from under the status bar has the inset on the
+                    // app bar, which stays when the bar goes
+                    final boolean pulled = isWheelSettings();
+                    final View appBar = findViewById(R.id.app_bar);
+                    appBar.setPadding(appBar.getPaddingLeft(), pulled ? insets.top : 0,
+                            appBar.getPaddingRight(), appBar.getPaddingBottom());
+                    container.setPadding(container.getPaddingLeft(),
+                            top_padding + (pulled ? 0 : insets.top),
                             container.getPaddingRight(), container.getPaddingBottom());
 
                     // Return CONSUMED if you don't want the window insets to keep being
@@ -415,6 +426,53 @@ public class SettingsHomepageActivity extends FragmentActivity implements
         FeatureFactory.getFeatureFactory().getSearchFeatureProvider()
                 .initSearchToolbar(this /* activity */, toolbar,
                         SettingsEnums.SETTINGS_HOMEPAGE);
+        if (isWheelSettings()) {
+            hideSearchBarUntilPulled(toolbar);
+        }
+    }
+
+    /** Whether Settings takes the wheel UI's revised layout (LineageSettings WHEEL_SETTINGS). */
+    private boolean isWheelSettings() {
+        return getResources().getBoolean(com.android.internal.R.bool.config_wheelFocus);
+    }
+
+    /**
+     * The wheel UI's search bar: out of sight until pulled down past the top of the list, or until
+     * the wheel moves up to it from the first item.
+     */
+    private void hideSearchBarUntilPulled(View toolbar) {
+        final AppBarLayout appBar = findViewById(R.id.app_bar);
+        final View container = findViewById(R.id.app_bar_container);
+        final AppBarLayout.LayoutParams lp =
+                (AppBarLayout.LayoutParams) container.getLayoutParams();
+        lp.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+                | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+        container.setLayoutParams(lp);
+        appBar.setExpanded(false, false);
+        toolbar.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && mLastWheelKey == KeyEvent.KEYCODE_DPAD_UP) {
+                // Up from the first item: the wheel's pull past the top
+                appBar.setExpanded(true, true);
+            } else if (hasFocus) {
+                // The window's first focus, the search bar staying out of sight
+                v.post(() -> {
+                    final View below = v.focusSearch(View.FOCUS_DOWN);
+                    if (below != null) {
+                        below.requestFocus();
+                    }
+                });
+            } else if (mLastWheelKey == KeyEvent.KEYCODE_DPAD_DOWN) {
+                appBar.setExpanded(false, true);
+            }
+        });
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            mLastWheelKey = event.getKeyCode();
+        }
+        return super.dispatchKeyEvent(event);
     }
 
     private void updateHomepageUI() {
