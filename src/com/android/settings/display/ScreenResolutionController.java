@@ -71,7 +71,7 @@ public class ScreenResolutionController extends BasePreferenceController {
         // Get the width and height for high resolution and full resolution
         List<Point> resolutionList = new ArrayList<>(resolutions);
         if (resolutionList == null || resolutionList.size() != 2) {
-            Log.e(TAG, "No support");
+            Log.d(TAG, "No support: one resolution, the page is off");
             return;
         }
 
