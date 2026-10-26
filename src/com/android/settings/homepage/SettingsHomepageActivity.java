@@ -448,6 +448,12 @@ public class SettingsHomepageActivity extends FragmentActivity implements
         lp.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
                 | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
         container.setLayoutParams(lp);
+        // Out of sight, the bar's last status bar's height stays on screen under the status bar,
+        // where the app bar's inset keeps the list: it fades out as it goes
+        appBar.addOnOffsetChangedListener((bar, offset) -> {
+            final int range = bar.getTotalScrollRange();
+            container.setAlpha(range == 0 ? 1f : 1f + (float) offset / range);
+        });
         appBar.setExpanded(false, false);
         // With the search bar out of sight, a title says where this is; it scrolls away
         final android.widget.LinearLayout content = findViewById(R.id.homepage_container);
