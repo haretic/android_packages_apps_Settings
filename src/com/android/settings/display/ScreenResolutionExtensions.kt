@@ -41,7 +41,7 @@ private fun Context.getSortedResolutionList(): List<Point>? {
         display.supportedModes.mapTo(mutableSetOf()) { Point(it.physicalWidth, it.physicalHeight) }
 
     if (resolutions.size != 2) {
-        Log.e(TAG, "No support")
+        Log.d(TAG, "No support: one resolution, the page is off")
         return null
     }
 
