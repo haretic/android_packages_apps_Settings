@@ -44,6 +44,7 @@ import android.util.FeatureFlagUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -442,17 +443,21 @@ public class SettingsHomepageActivity extends FragmentActivity implements
      */
     private void hideSearchBarUntilPulled(View toolbar) {
         final AppBarLayout appBar = findViewById(R.id.app_bar);
-        final View container = findViewById(R.id.app_bar_container);
+        final ViewGroup container = findViewById(R.id.app_bar_container);
         final AppBarLayout.LayoutParams lp =
                 (AppBarLayout.LayoutParams) container.getLayoutParams();
         lp.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
                 | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
         container.setLayoutParams(lp);
         // Out of sight, the bar's last status bar's height stays on screen under the status bar,
-        // where the app bar's inset keeps the list: it fades out as it goes
+        // where the app bar's inset keeps the list: the search bar fades out as it goes, its
+        // background staying to cover the list scrolled up under the status bar
         appBar.addOnOffsetChangedListener((bar, offset) -> {
             final int range = bar.getTotalScrollRange();
-            container.setAlpha(range == 0 ? 1f : 1f + (float) offset / range);
+            final float alpha = range == 0 ? 1f : 1f + (float) offset / range;
+            for (int i = 0; i < container.getChildCount(); i++) {
+                container.getChildAt(i).setAlpha(alpha);
+            }
         });
         appBar.setExpanded(false, false);
         // With the search bar out of sight, a title says where this is; it scrolls away
