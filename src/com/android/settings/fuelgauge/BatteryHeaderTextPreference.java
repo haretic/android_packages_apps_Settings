@@ -17,8 +17,10 @@
 package com.android.settings.fuelgauge;
 
 import android.content.Context;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -47,10 +49,16 @@ public class BatteryHeaderTextPreference extends Preference implements GroupSect
     public void onBindViewHolder(PreferenceViewHolder view) {
         final TextView textView = (TextView) view.findViewById(R.id.text);
         textView.setText(mText);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        // Links make the text a focus stop; a plain status such as "Charged" is not one
+        textView.setMovementMethod(hasLink(mText) ? LinkMovementMethod.getInstance() : null);
         if (!TextUtils.isEmpty(mContentDescription)) {
             textView.setContentDescription(mContentDescription);
         }
+    }
+
+    private static boolean hasLink(@Nullable CharSequence text) {
+        return text instanceof Spanned
+                && ((Spanned) text).getSpans(0, text.length(), ClickableSpan.class).length > 0;
     }
 
     void setText(@Nullable CharSequence text) {
