@@ -461,20 +461,7 @@ public class SettingsHomepageActivity extends FragmentActivity implements
         });
         appBar.setExpanded(false, false);
         // With the search bar out of sight, a title says where this is; it scrolls away
-        final android.widget.LinearLayout content = findViewById(R.id.homepage_container);
-        if (content != null && content.findViewWithTag("wheel_title") == null) {
-            final android.widget.TextView title = new android.widget.TextView(this);
-            title.setTag("wheel_title");
-            title.setText(R.string.settings_label);
-            title.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_HeadlineSmall);
-            title.setTextColor(getColor(com.android.internal.R.color.materialColorOnSurface));
-            final float density = getResources().getDisplayMetrics().density;
-            title.setPadding(Math.round(24 * density), Math.round(12 * density),
-                    Math.round(24 * density), Math.round(12 * density));
-            title.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
-            title.setAccessibilityHeading(true);
-            content.addView(title, 0);
-        }
+        updateHomepageTitle();
         toolbar.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus && mLastWheelKey == KeyEvent.KEYCODE_DPAD_UP) {
                 // Up from the first item: the wheel's pull past the top
@@ -493,6 +480,18 @@ public class SettingsHomepageActivity extends FragmentActivity implements
         });
     }
 
+    private void updateHomepageTitle() {
+        final ViewGroup content = findViewById(R.id.homepage_container);
+        if (content == null || !isWheelSettings()) {
+            return;
+        }
+        final View title = content.findViewWithTag("wheel_title");
+        if (title != null) {
+            content.removeView(title);
+        }
+        content.addView(getLayoutInflater().inflate(R.layout.homepage_title, content, false), 0);
+    }
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -502,6 +501,8 @@ public class SettingsHomepageActivity extends FragmentActivity implements
     }
 
     private void updateHomepageUI() {
+        // This activity handles window size changes without reinflating its layout.
+        updateHomepageTitle();
         final boolean newTwoPaneState = ActivityEmbeddingUtils.isAlreadyEmbedded(this);
         if (mIsTwoPane != newTwoPaneState) {
             mIsTwoPane = newTwoPaneState;

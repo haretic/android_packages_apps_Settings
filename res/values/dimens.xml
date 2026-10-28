@@ -95,6 +95,10 @@
     <!-- Homepage -->
     <dimen name="homepage_title_margin_bottom">8dp</dimen>
     <dimen name="homepage_title_margin_horizontal">24dp</dimen>
+    <!-- Keep the wheel homepage title compact on short windows. -->
+    <dimen name="wheel_homepage_title_text_size">18sp</dimen>
+    <dimen name="wheel_homepage_title_line_height">24sp</dimen>
+    <dimen name="wheel_homepage_title_padding_vertical">2dp</dimen>
     <dimen name="homepage_preference_min_height">88sp</dimen>
     <dimen name="homepage_preference_text_padding_start">16dp</dimen>
     <dimen name="homepage_preference_text_padding_start_expressive">12dp</dimen>
