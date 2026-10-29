@@ -3,4 +3,8 @@
 <resources>
     <!-- A slider the side button grabbed: the wheel sets it until it is let go [CHAR LIMIT=48] -->
     <string name="wheel_seekbar_grabbed">Turn to set - press to let go</string>
+    <!-- Developer options: the R1 checks its own UI, the wheel, dialogs and the taskbar [CHAR LIMIT=32] -->
+    <string name="r1_self_test_title">Self test</string>
+    <!-- [CHAR LIMIT=80] -->
+    <string name="r1_self_test_summary">Check the wheel, dialogs and taskbar on this device</string>
 </resources>
