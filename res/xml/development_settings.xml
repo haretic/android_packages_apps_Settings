@@ -40,6 +40,16 @@
             android:summary="@string/summary_placeholder"
             android:fragment="com.android.settings.bugreporthandler.BugReportHandlerPicker" />
 
+        <!-- The R1's own UI checks, run on it (device/rabbit/r1 selftest/) -->
+        <Preference
+            android:key="r1_self_test"
+            android:title="@string/r1_self_test_title"
+            android:summary="@string/r1_self_test_summary">
+            <intent
+                android:targetPackage="cat.kenny.r1.problemreport"
+                android:targetClass="cat.kenny.r1.problemreport.SelfTestActivity" />
+        </Preference>
+
         <Preference
             android:key="system_server_heap_dump"
             android:title="@string/capture_system_heap_dump_title" />
