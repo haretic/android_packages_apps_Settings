@@ -6,5 +6,5 @@
     <!-- Developer options: the R1 checks its own UI, the wheel, dialogs and the taskbar [CHAR LIMIT=32] -->
     <string name="r1_self_test_title">Self test</string>
     <!-- [CHAR LIMIT=80] -->
-    <string name="r1_self_test_summary">Check the wheel, dialogs and taskbar on this device</string>
+    <string name="r1_self_test_summary">Check the wheel, dialogs and taskbar</string>
 </resources>
