@@ -149,9 +149,10 @@ public class LanguageAndRegionSettings extends RestrictedDashboardFragment {
         mViewModel.getDialogType().observe(this, this::showConfirmDialogByType);
 
         Intent intent = getIntent();
-        String action = intent != null ? intent.getAction() : "";
+        // No action when opened by its class, as from Settings search
+        String action = intent != null ? intent.getAction() : null;
         Log.d(TAG, "action:" + action);
-        if (action.equals(Settings.ACTION_REGIONAL_PREFERENCES_SETTINGS)) {
+        if (Settings.ACTION_REGIONAL_PREFERENCES_SETTINGS.equals(action)) {
             scrollToPreference(KEY_TEMPERATURE_PREFERENCE);
         }
     }
