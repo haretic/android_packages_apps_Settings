@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.internal.jank.InteractionJankMonitor;
 import com.android.settings.overlay.FeatureFactory;
 import com.android.settings.survey.SurveyMixin;
+import com.android.settings.widget.WheelListAdjust;
 import com.android.settingslib.core.instrumentation.Instrumentable;
 import com.android.settingslib.core.instrumentation.MetricsFeatureProvider;
 import com.android.settingslib.core.instrumentation.SettingsJankMonitor;
@@ -91,6 +92,7 @@ public abstract class InstrumentedPreferenceFragment extends ObservablePreferenc
 
     @Override
     public void onPause() {
+        WheelListAdjust.cancel();
         final RecyclerView recyclerView = getListView();
         if (mOnScrollListener != null) {
             recyclerView.removeOnScrollListener(mOnScrollListener);

@@ -55,6 +55,7 @@ import com.android.settings.restriction.UserRestrictionBindingHelper;
 import com.android.settings.support.actionbar.HelpResourceProvider;
 import com.android.settings.widget.HighlightablePreferenceGroupAdapter;
 import com.android.settings.widget.LoadingViewController;
+import com.android.settings.widget.WheelListAdjust;
 import com.android.settingslib.CustomDialogPreferenceCompat;
 import com.android.settingslib.CustomEditTextPreferenceCompat;
 import com.android.settingslib.core.instrumentation.Instrumentable;
@@ -612,6 +613,10 @@ public abstract class SettingsPreferenceFragment extends InstrumentedPreferenceF
 
     @Override
     public void onDisplayPreferenceDialog(Preference preference) {
+        // The wheel's press on a list grabs it, to turn through its choices in place
+        if (WheelListAdjust.onDisplayDialog(this, preference)) {
+            return;
+        }
         if (preference.getKey() == null) {
             // Auto-key preferences that don't have a key, so the dialog can find them.
             preference.setKey(UUID.randomUUID().toString());
