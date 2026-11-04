@@ -59,7 +59,9 @@ open class ShortcutsSettingsScreen : PreferenceScreenMixin {
     override fun getPreferenceHierarchy(context: Context, coroutineScope: CoroutineScope) =
         preferenceHierarchy(context) {
             +ButtonShortcutSettingScreen.KEY
-            +VolumeKeysShortcutLockScreenPreference()
+            if (context.resources.getBoolean(R.bool.config_hasPhysicalVolumeKeys)) {
+                +VolumeKeysShortcutLockScreenPreference()
+            }
         }
 
     companion object {

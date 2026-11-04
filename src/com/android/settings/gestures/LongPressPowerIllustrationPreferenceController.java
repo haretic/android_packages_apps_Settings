@@ -43,7 +43,8 @@ public class LongPressPowerIllustrationPreferenceController extends BasePreferen
 
     @Override
     public int getAvailabilityStatus() {
-        return AVAILABLE;
+        return PowerMenuSettingsUtils.isLongPressPowerSettingAvailable(mContext)
+                ? AVAILABLE : UNSUPPORTED_ON_DEVICE;
     }
 
     @Override

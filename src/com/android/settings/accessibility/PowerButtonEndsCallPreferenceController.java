@@ -24,6 +24,7 @@ import android.view.KeyEvent;
 import com.android.settings.R;
 import com.android.settings.Utils;
 import com.android.settings.core.TogglePreferenceController;
+import com.android.settings.wheel.WheelSideButtonUtils;
 
 // LINT.IfChange
 public class PowerButtonEndsCallPreferenceController extends TogglePreferenceController {
@@ -50,7 +51,8 @@ public class PowerButtonEndsCallPreferenceController extends TogglePreferenceCon
 
     @Override
     public int getAvailabilityStatus() {
-        return !KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_POWER)
+        return WheelSideButtonUtils.isEnabled(mContext)
+                || !KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_POWER)
                 || !Utils.isVoiceCapable(mContext) ? UNSUPPORTED_ON_DEVICE : AVAILABLE;
     }
 

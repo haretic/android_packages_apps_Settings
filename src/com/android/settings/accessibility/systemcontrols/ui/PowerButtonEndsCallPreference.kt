@@ -23,6 +23,7 @@ import com.android.settings.R
 import com.android.settings.Utils
 import com.android.settings.accessibility.systemcontrols.data.PowerButtonEndsCallDataStore
 import com.android.settings.metrics.PreferenceActionMetricsProvider
+import com.android.settings.wheel.WheelSideButtonUtils
 import com.android.settingslib.datastore.KeyValueStore
 import com.android.settingslib.datastore.SettingsSecureStore
 import com.android.settingslib.metadata.PreferenceAvailabilityProvider
@@ -44,12 +45,14 @@ class PowerButtonEndsCallPreference :
         get() = ACTION_POWER_BUTTON_ENDS_CALL
 
     override val availabilityDescription =
-        "The device must have a power button. The device must be voice capable."
+        "The device must have a power button with stock handling and must be voice capable."
 
-    override fun getAvailabilityStability() = PreconditionStability.STABLE_UNTIL_APK_UPDATE
+    override fun getAvailabilityStability() = PreconditionStability.UNSTABLE
 
     override fun isAvailable(context: Context) =
-        KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_POWER) && Utils.isVoiceCapable(context)
+        !WheelSideButtonUtils.isEnabled(context) &&
+            KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_POWER) &&
+            Utils.isVoiceCapable(context)
 
     override fun storage(context: Context) = context.dataStore
 

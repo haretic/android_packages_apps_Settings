@@ -1096,4 +1096,8 @@
 
     <!-- TODO(b/496286136): Whether to force showing the icon on the locale picker screen. -->
     <bool name="config_force_showing_icon_on_locale_picker_screen">false</bool>
+
+    <!-- Whether the device has physical volume keys for holds and chords. -->
+    <bool name="config_hasPhysicalVolumeKeys">true</bool>
+
 </resources>

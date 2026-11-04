@@ -43,7 +43,8 @@ public class LongPressPowerFooterPreferenceController extends BasePreferenceCont
 
     @Override
     public int getAvailabilityStatus() {
-        return AVAILABLE;
+        return PowerMenuSettingsUtils.isLongPressPowerSettingAvailable(mContext)
+                ? AVAILABLE : UNSUPPORTED_ON_DEVICE;
     }
 
     @Override
@@ -68,7 +69,8 @@ public class LongPressPowerFooterPreferenceController extends BasePreferenceCont
         }
 
         preference.setSummary(footerHintText);
-        preference.setVisible(PowerMenuSettingsUtils.isLongPressPowerForAssistantEnabled(mContext));
+        preference.setVisible(isAvailable()
+                && PowerMenuSettingsUtils.isLongPressPowerForAssistantEnabled(mContext));
     }
 
     @Override

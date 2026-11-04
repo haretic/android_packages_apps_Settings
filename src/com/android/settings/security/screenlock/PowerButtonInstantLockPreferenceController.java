@@ -29,6 +29,7 @@ import com.android.settings.R;
 import com.android.settings.core.PreferenceControllerMixin;
 import com.android.settings.overlay.FeatureFactory;
 import com.android.settings.security.trustagent.TrustAgentManager;
+import com.android.settings.wheel.WheelSideButtonUtils;
 import com.android.settingslib.core.AbstractPreferenceController;
 
 public class PowerButtonInstantLockPreferenceController extends AbstractPreferenceController
@@ -53,7 +54,8 @@ public class PowerButtonInstantLockPreferenceController extends AbstractPreferen
     public boolean isAvailable() {
         boolean isLaptopDevice =
                 mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PC);
-        if (!mLockPatternUtils.isSecure(mUserId) || isLaptopDevice) {
+        if (WheelSideButtonUtils.isEnabled(mContext)
+                || !mLockPatternUtils.isSecure(mUserId) || isLaptopDevice) {
             return false;
         }
         switch (mLockPatternUtils.getKeyguardStoredPasswordQuality(mUserId)) {
