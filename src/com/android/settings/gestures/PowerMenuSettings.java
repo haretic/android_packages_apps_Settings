@@ -17,6 +17,7 @@
 package com.android.settings.gestures;
 
 import android.app.settings.SettingsEnums;
+import android.content.Context;
 
 import com.android.settings.R;
 import com.android.settings.dashboard.DashboardFragment;
@@ -44,5 +45,10 @@ public class PowerMenuSettings extends DashboardFragment {
     }
 
     public static final BaseSearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
-            new BaseSearchIndexProvider(R.xml.power_menu_settings);
+            new BaseSearchIndexProvider(R.xml.power_menu_settings) {
+                @Override
+                protected boolean isPageSearchEnabled(Context context) {
+                    return PowerMenuSettingsUtils.isLongPressPowerSettingAvailable(context);
+                }
+            };
 }

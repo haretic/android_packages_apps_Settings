@@ -23,6 +23,7 @@ import com.android.internal.accessibility.common.ShortcutConstants.UserShortcutT
 import com.android.settings.R
 import com.android.settingslib.datastore.KeyValueStore
 import com.android.settingslib.datastore.SettingsSecureStore
+import com.android.settingslib.metadata.PreferenceAvailabilityProvider
 import com.android.settingslib.metadata.PreferenceSummaryProvider
 import com.android.settingslib.metadata.SensitivityLevel
 import com.android.settingslib.metadata.SwitchPreference
@@ -35,7 +36,15 @@ class VolumeKeysShortcutLockScreenPreference() :
         purpose = R.string.a11y_volume_keys_shortcut_setting_on_lock_screen_purpose,
         title = R.string.accessibility_shortcut_service_on_lock_screen_title,
     ),
-    PreferenceSummaryProvider {
+    PreferenceSummaryProvider,
+    PreferenceAvailabilityProvider {
+
+    override val availabilityDescription = "The device must have physical volume keys."
+
+    override fun getAvailabilityStability() = PreconditionStability.STABLE_UNTIL_APK_UPDATE
+
+    override fun isAvailable(context: Context) =
+        context.resources.getBoolean(R.bool.config_hasPhysicalVolumeKeys)
 
     override fun storage(context: Context): KeyValueStore {
 

@@ -17,6 +17,7 @@
 package com.android.settings.development;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.SystemProperties;
 import android.util.Log;
 
@@ -25,6 +26,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.preference.Preference;
 import androidx.preference.TwoStatePreference;
 
+import com.android.settings.core.PreferenceControllerMixin;
 import com.android.settingslib.development.DeveloperOptionsPreferenceController;
 
 /**
@@ -32,7 +34,7 @@ import com.android.settingslib.development.DeveloperOptionsPreferenceController;
  */
 public class NfcVerboseVendorLogPreferenceController
         extends DeveloperOptionsPreferenceController
-        implements Preference.OnPreferenceChangeListener {
+        implements Preference.OnPreferenceChangeListener, PreferenceControllerMixin {
     private static final String TAG = "NfcVerboseVendorLog";
     private static final String NFC_VERBOSE_VENDOR_LOG_KEY = "nfc_verbose_vendor_log";
     @VisibleForTesting
@@ -52,6 +54,12 @@ public class NfcVerboseVendorLogPreferenceController
             @Nullable DevelopmentSettingsDashboardFragment fragment) {
         super(context);
         mFragment = fragment;
+    }
+
+    @Override
+    public boolean isAvailable() {
+        // NFC logging requires NFC hardware.
+        return mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC);
     }
 
     @Override

@@ -26,6 +26,7 @@ import androidx.preference.Preference;
 
 import com.android.settings.R;
 import com.android.settings.core.BasePreferenceController;
+import com.android.settings.wheel.WheelSideButtonUtils;
 import com.android.settingslib.emergencynumber.EmergencyNumberUtils;
 
 /**
@@ -79,6 +80,9 @@ public class EmergencyGestureEntrypointPreferenceController extends BasePreferen
 
     @Override
     public int getAvailabilityStatus() {
+        if (WheelSideButtonUtils.isEnabled(mContext)) {
+            return UNSUPPORTED_ON_DEVICE;
+        }
         final boolean isConfigEnabled = mContext.getResources()
                 .getBoolean(R.bool.config_show_emergency_gesture_settings);
 

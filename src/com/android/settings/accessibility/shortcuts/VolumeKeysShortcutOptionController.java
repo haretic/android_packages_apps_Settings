@@ -58,7 +58,7 @@ public class VolumeKeysShortcutOptionController extends ShortcutOptionPreference
 
     @Override
     protected boolean isShortcutAvailable() {
-        return true;
+        return mContext.getResources().getBoolean(R.bool.config_hasPhysicalVolumeKeys);
     }
 }
 // LINT.ThenChange(ui/VolumeKeysShortcutPreference.kt)

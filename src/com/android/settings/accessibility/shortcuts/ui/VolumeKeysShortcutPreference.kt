@@ -23,10 +23,13 @@ import com.android.internal.accessibility.common.ShortcutConstants.UserShortcutT
 import com.android.settings.R
 import com.android.settings.accessibility.Flags
 import com.android.settings.accessibility.shortcuts.ShortcutOptionPreference as ShortcutOptionWidget
+import com.android.settingslib.metadata.PreferenceAvailabilityProvider
 import com.android.settingslib.metadata.PreferenceMetadata
+import com.android.settingslib.metadata.preferencesapi.preconditions.PreconditionStability
 
 class VolumeKeysShortcutPreference(context: Context, targets: Set<String>) :
-    ShortcutOptionPreference(context, UserShortcutType.HARDWARE, targets) {
+    ShortcutOptionPreference(context, UserShortcutType.HARDWARE, targets),
+    PreferenceAvailabilityProvider {
     override val key: String
         get() = KEY
 
@@ -38,6 +41,13 @@ class VolumeKeysShortcutPreference(context: Context, targets: Set<String>) :
 
     override val summary: Int
         get() = R.string.accessibility_shortcut_edit_dialog_summary_hardware
+
+    override val availabilityDescription = "The device must have physical volume keys."
+
+    override fun getAvailabilityStability() = PreconditionStability.STABLE_UNTIL_APK_UPDATE
+
+    override fun isAvailable(context: Context) =
+        context.resources.getBoolean(R.bool.config_hasPhysicalVolumeKeys)
 
     override fun bind(preference: Preference, metadata: PreferenceMetadata) {
         super.bind(preference, metadata)

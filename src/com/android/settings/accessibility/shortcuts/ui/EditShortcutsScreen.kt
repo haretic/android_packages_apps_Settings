@@ -158,7 +158,9 @@ private constructor(
             +FloatingButtonShortcutPreference(context, shortcutTargets)
             +GestureShortcutPreference(context, shortcutTargets)
             +NavButtonShortcutPreference(context, shortcutTargets)
-            +VolumeKeysShortcutPreference(context, shortcutTargets)
+            if (context.resources.getBoolean(R.bool.config_hasPhysicalVolumeKeys)) {
+                +VolumeKeysShortcutPreference(context, shortcutTargets)
+            }
             +TopRowKeyShortcutPreference(context, shortcutTargets)
             +advancedPreference
             +TripleTapShortcutPreference(

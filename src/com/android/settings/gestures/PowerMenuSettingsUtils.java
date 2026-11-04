@@ -24,6 +24,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 
+import com.android.settings.wheel.WheelSideButtonUtils;
+
 /** Common code for long press power settings shared between controllers. */
 final class PowerMenuSettingsUtils {
 
@@ -75,6 +77,9 @@ final class PowerMenuSettingsUtils {
      * @return true if long press power for assistant setting is available on the device.
      */
     public static boolean isLongPressPowerSettingAvailable(Context context) {
+        if (WheelSideButtonUtils.isEnabled(context)) {
+            return false;
+        }
         if (!context.getResources().getBoolean(
                 com.android.internal.R.bool.config_longPressOnPowerForAssistantSettingAvailable)) {
             return false;

@@ -64,6 +64,9 @@ public class HardwareShortcutFromLockscreenPreferenceController
 
     @Override
     public int getAvailabilityStatus() {
+        if (!mContext.getResources().getBoolean(R.bool.config_hasPhysicalVolumeKeys)) {
+            return UNSUPPORTED_ON_DEVICE;
+        }
         if (mContext.getSystemService(AccessibilityManager.class)
                 .getAccessibilityShortcutTargets(HARDWARE).isEmpty()) {
             return DISABLED_DEPENDENT_SETTING;

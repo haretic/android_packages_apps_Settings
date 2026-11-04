@@ -22,6 +22,7 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.settings.R;
 import com.android.settings.core.TogglePreferenceController;
+import com.android.settings.wheel.WheelSideButtonUtils;
 import com.android.settingslib.emergencynumber.EmergencyNumberUtils;
 
 /**
@@ -44,6 +45,9 @@ public class EmergencyGestureSoundPreferenceController extends TogglePreferenceC
 
     @Override
     public int getAvailabilityStatus() {
+        if (WheelSideButtonUtils.isEnabled(mContext)) {
+            return UNSUPPORTED_ON_DEVICE;
+        }
         return isGestureAvailable(mContext) ? AVAILABLE : UNSUPPORTED_ON_DEVICE;
     }
 

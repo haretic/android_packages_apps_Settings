@@ -17,6 +17,7 @@
 package com.android.settings.development;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.provider.Settings;
 
 import androidx.annotation.VisibleForTesting;
@@ -39,6 +40,14 @@ public class WifiDisplayCertificationPreferenceController extends
 
     public WifiDisplayCertificationPreferenceController(Context context) {
         super(context);
+    }
+
+    @Override
+    public boolean isAvailable() {
+        // Certification requires Wi-Fi display support.
+        return mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WIFI_DIRECT)
+                && mContext.getResources().getBoolean(
+                        com.android.internal.R.bool.config_enableWifiDisplay);
     }
 
     @Override
