@@ -279,8 +279,10 @@ public class SeekBarPreference extends RestrictedPreference
         mWheelBar.setPressed(grabbed);
         if (grabbed) {
             mWheelBar.postDelayed(mWheelLetGo, WHEEL_GRAB_TIMEOUT_MS);
-            android.widget.Toast.makeText(getContext(), com.android.settings.R.string.wheel_seekbar_grabbed,
-                    android.widget.Toast.LENGTH_SHORT).show();
+            android.widget.WheelCue.show(mWheelBar, com.android.settings.R.string.wheel_slider_cue_turn,
+                    com.android.settings.R.string.wheel_slider_cue_press);
+        } else {
+            android.widget.WheelCue.hide();
         }
     }
 
