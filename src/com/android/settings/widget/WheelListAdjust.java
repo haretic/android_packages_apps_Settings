@@ -8,7 +8,7 @@ import android.content.res.Resources;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.WheelCue;
 
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -134,7 +134,7 @@ public final class WheelListAdjust implements View.OnKeyListener {
         mRow.setPressed(true);
         show();
         mRow.postDelayed(mLetGo, LET_GO_MS);
-        Toast.makeText(mRow.getContext(), R.string.wheel_list_grabbed, Toast.LENGTH_SHORT).show();
+        WheelCue.show(mRow, R.string.wheel_list_cue_turn, R.string.wheel_list_cue_press);
     }
 
     private void show() {
@@ -148,6 +148,7 @@ public final class WheelListAdjust implements View.OnKeyListener {
         if (sActive == this) {
             sActive = null;
         }
+        WheelCue.hide();
         mRow.removeCallbacks(mLetGo);
         mRow.setOnKeyListener(null);
         mRow.setPressed(false);
