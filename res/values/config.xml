@@ -1100,4 +1100,8 @@
     <!-- Whether the device has physical volume keys for holds and chords. -->
     <bool name="config_hasPhysicalVolumeKeys">true</bool>
 
+    <!-- System apps App info offers to uninstall, as other apps, not only to disable: removed for
+         the user, the copy in the image staying. For apps a build bundles that it doesn't need. -->
+    <string-array name="config_userRemovableSystemPackages" translatable="false" />
+
 </resources>
