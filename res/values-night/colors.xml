@@ -17,17 +17,18 @@
 <resources
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
 
-    <!-- Dashboard/homepage icon colors -->
-    <color name="homepage_blue_variant_bg">@color/m3_ref_palette_blue_variant80</color>
-    <color name="homepage_blue_bg">@color/m3_ref_palette_blue80</color>
-    <color name="homepage_pink_bg">@color/m3_ref_palette_pink80</color>
+    <!-- Dashboard/homepage icon colors. haretic: the blue, cyan, purple and pink families are warm
+         tones of the same lightness (sand, apricot, sage, mauve, rose) that sit with the orange -->
+    <color name="homepage_blue_variant_bg">#E1C292</color>
+    <color name="homepage_blue_bg">#FDB791</color>
+    <color name="homepage_pink_bg">#FDB3BC</color>
     <color name="homepage_orange_bg">@color/m3_ref_palette_orange80</color>
     <color name="homepage_yellow_bg">@color/m3_ref_palette_yellow80</color>
     <color name="homepage_green_bg">@color/m3_ref_palette_green80</color>
     <color name="homepage_grey_bg">@color/m3_ref_palette_grey80</color>
-    <color name="homepage_cyan_bg">@color/m3_ref_palette_cyan80</color>
+    <color name="homepage_cyan_bg">#B6CDA8</color>
     <color name="homepage_red_bg">@color/m3_ref_palette_red80</color>
-    <color name="homepage_purple_bg">@color/m3_ref_palette_purple80</color>
+    <color name="homepage_purple_bg">#ECB8D4</color>
 
     <color name="contextual_card_background">@*android:color/material_grey_900</color>
     <color name="notification_importance_button_unselected">#5F6368</color>
