@@ -14,4 +14,16 @@
     <string name="r1_self_test_title">Self test</string>
     <!-- [CHAR LIMIT=80] -->
     <string name="r1_self_test_summary">Check the wheel, dialogs and taskbar</string>
+    <!-- Choosing a PIN on the lock screen's combination dial: in its middle with nothing turned [CHAR LIMIT=8] -->
+    <string name="wheel_pin_dial_idle">Turn</string>
+    <!-- Under the dial, the first line [CHAR LIMIT=40] -->
+    <string name="wheel_pin_dial_hint_start">Turn as many steps as the first digit</string>
+    <string name="wheel_pin_dial_hint_back">Turn back to set this digit</string>
+    <string name="wheel_pin_dial_hint_next">Turn for the next digit</string>
+    <string name="wheel_pin_dial_hint_short">A PIN has at least 4 digits</string>
+    <!-- ...the second line [CHAR LIMIT=40] -->
+    <string name="wheel_pin_dial_hint_press">Press to go on - hold to undo</string>
+    <string name="wheel_pin_dial_hint_keyboard">Press to type it instead</string>
+    <string name="wheel_pin_dial_description">Combination dial</string>
+    <string name="wheel_pin_dial_state_idle">Nothing turned</string>
 </resources>
