@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <!-- Title of the haretic release in About phone, as the image is named [CHAR LIMIT=40] -->
+    <string name="haretic_version" translatable="false">haretic version</string>
+</resources>
