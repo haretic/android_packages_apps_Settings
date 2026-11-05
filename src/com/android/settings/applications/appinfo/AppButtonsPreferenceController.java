@@ -52,6 +52,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceScreen;
 
+import com.android.internal.util.ArrayUtils;
 import com.android.settings.R;
 import com.android.settings.SettingsActivity;
 import com.android.settings.Utils;
@@ -247,7 +248,7 @@ public class AppButtonsPreferenceController extends BasePreferenceController imp
                 return;
             }
             if (!showAdminSupportDialogIfRestricted(packageName)
-                    && (mAppEntry.info.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                    && isFixedSystemApp()) {
                 if (mAppEntry.info.enabled && !isDisabledUntilUsed()) {
                     showDialogInner(ButtonActionDialogFragment.DialogType.DISABLE);
                 } else if (mAppEntry.info.enabled) {
@@ -442,9 +443,19 @@ public class AppButtonsPreferenceController extends BasePreferenceController imp
         mButtonsPref.setButton1Visible(mAppLaunchIntent != null);
     }
 
+    /**
+     * A system app only disabled, not uninstalled: all but those the build lets the user remove
+     * (config_userRemovableSystemPackages), which uninstall for the user as other apps do.
+     */
+    private boolean isFixedSystemApp() {
+        return (mAppEntry.info.flags & ApplicationInfo.FLAG_SYSTEM) != 0
+                && !ArrayUtils.contains(mContext.getResources().getStringArray(
+                        R.array.config_userRemovableSystemPackages), mAppEntry.info.packageName);
+    }
+
     @VisibleForTesting
     void updateUninstallButton() {
-        final boolean isBundled = (mAppEntry.info.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
+        final boolean isBundled = isFixedSystemApp();
         boolean enabled = true;
         if (isBundled) {
             enabled = handleDisableable();
