@@ -110,6 +110,8 @@ import com.google.android.setupcompat.template.FooterButton;
 import com.google.android.setupdesign.GlifLayout;
 import com.google.android.setupdesign.util.ThemeHelper;
 
+import lineageos.providers.LineageSettings;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -260,6 +262,9 @@ public class ChooseLockPassword extends SettingsActivity {
         private boolean mRequestWriteRepairModePassword;
 
         private EditText mPasswordEntry;
+        /** The wheel UI's dial in the PIN field's place, null once the PIN is typed instead. */
+        private WheelPinDial mWheelDial;
+        private View mWheelDialField;
         private TextViewInputDisabler mPasswordEntryInputDisabler;
 
         // Minimum password metrics enforced by admins.
@@ -673,6 +678,9 @@ public class ChooseLockPassword extends SettingsActivity {
             mPasswordEntry.setTypeface(Typeface.create(
                     getContext().getString(com.android.internal.R.string.config_headlineFontFamily),
                     Typeface.NORMAL));
+            if (!mIsAlphaMode && isWheelUi()) {
+                setupWheelDial(view);
+            }
 
             Intent intent = getActivity().getIntent();
             final boolean confirmCredentials = intent.getBooleanExtra(
@@ -799,6 +807,10 @@ public class ChooseLockPassword extends SettingsActivity {
             if (mSaveAndFinishWorker != null) {
                 mSaveAndFinishWorker.setListener(this);
             } else {
+                if (mWheelDial != null) {
+                    mWheelDial.requestFocus();
+                    return;
+                }
                 mPasswordEntry.requestFocus();
                 if (mPasswordEntry instanceof ImeAwareEditText) {
                     ((ImeAwareEditText) mPasswordEntry).scheduleShowSoftInput();
@@ -904,6 +916,82 @@ public class ChooseLockPassword extends SettingsActivity {
             return mPasswordHistoryHashFactor;
         }
 
+        private boolean isWheelUi() {
+            return LineageSettings.Secure.getIntForUser(getContext().getContentResolver(),
+                    LineageSettings.Secure.WHEEL_UI, 1, UserHandle.myUserId()) != 0;
+        }
+
+        /**
+         * The wheel UI's PIN, chosen on the lock screen's combination dial in the field's place,
+         * as it will be entered there; a press with nothing turned types it instead.
+         */
+        private void setupWheelDial(View view) {
+            final View container = view.findViewById(R.id.password_container);
+            final ViewGroup content = (ViewGroup) container.getParent();
+            mWheelDial = new WheelPinDial(getContext());
+            mWheelDial.setListener(new WheelPinDial.Listener() {
+                @Override
+                public void onDigit(int digit) {
+                    if (mUiStage == Stage.ConfirmWrong) {
+                        // Not the PIN chosen: its first digit turned again starts it afresh
+                        mPasswordEntry.setText("");
+                    }
+                    mPasswordEntry.append(Integer.toString(digit));
+                }
+
+                @Override
+                public void onOk() {
+                    handleNext();
+                }
+
+                @Override
+                public void onDelete() {
+                    final Editable text = mPasswordEntry.getText();
+                    if (text.length() > 0) {
+                        text.delete(text.length() - 1, text.length());
+                    }
+                }
+
+                @Override
+                public void onUseKeyboard() {
+                    useKeyboard();
+                }
+
+                @Override
+                public int enteredLength() {
+                    return mPasswordEntry.getText().length();
+                }
+            });
+            content.addView(mWheelDial, content.indexOfChild(container) + 1,
+                    new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+            mWheelDialField = view.findViewById(R.id.password_entry_layout);
+            if (mWheelDialField == null) {
+                mWheelDialField = mPasswordEntry;
+            }
+            mWheelDialField.setVisibility(View.GONE);
+            mPasswordEntry.setShowSoftInputOnFocus(false);
+            mPasswordEntry.setFocusable(false);
+            mWheelDial.requestFocus();
+        }
+
+        /** The field and the keyboard back, in the dial's place. */
+        private void useKeyboard() {
+            final WheelPinDial dial = mWheelDial;
+            mWheelDial = null;
+            dial.setVisibility(View.GONE);
+            mWheelDialField.setVisibility(View.VISIBLE);
+            mPasswordEntry.setShowSoftInputOnFocus(true);
+            mPasswordEntry.setFocusable(true);
+            mPasswordEntry.setFocusableInTouchMode(true);
+            mPasswordEntry.requestFocus();
+            if (mPasswordEntry instanceof ImeAwareEditText) {
+                ((ImeAwareEditText) mPasswordEntry).scheduleShowSoftInput();
+            } else if (mPasswordEntry instanceof ImeAwareTextInputEditText) {
+                ((ImeAwareTextInputEditText) mPasswordEntry).scheduleShowSoftInput();
+            }
+        }
+
         public void handleNext() {
             if (mSaveAndFinishWorker != null) return;
             // TODO(b/120484642): This is a point of entry for passwords from the UI
@@ -920,6 +1008,9 @@ public class ChooseLockPassword extends SettingsActivity {
                     updateStage(Stage.NeedToConfirm);
                 } else {
                     mChosenPassword.zeroize();
+                    if (mWheelDial != null) {
+                        mWheelDial.shake();
+                    }
                 }
             } else if (mUiStage == Stage.NeedToConfirm) {
                 if (mChosenPassword.equals(mFirstPassword)) {
@@ -931,6 +1022,9 @@ public class ChooseLockPassword extends SettingsActivity {
                     }
                     updateStage(Stage.ConfirmWrong);
                     mChosenPassword.zeroize();
+                    if (mWheelDial != null) {
+                        mWheelDial.shake();
+                    }
                 }
             }
         }
@@ -1174,6 +1268,15 @@ public class ChooseLockPassword extends SettingsActivity {
             }
             // Schedule the UI update.
             mTextChangedHandler.notifyAfterTextChanged();
+            if (mWheelDial != null) {
+                // The dial's pins are the PIN's digits; a PIN cleared starts it afresh
+                if (s.length() == 0) {
+                    mWheelDial.reset();
+                } else {
+                    mWheelDial.invalidate();
+                    mWheelDial.updateTakeBack();
+                }
+            }
         }
 
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
