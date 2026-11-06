@@ -19,7 +19,7 @@ import com.android.settings.Utils;
 import com.android.settings.core.BasePreferenceController;
 
 /**
- * The haretic release, as its image is named: haretic-YYYYMMDD-nightly, -beta or -release.
+ * The haretic release, as its image is named: haretic-YYYYMMDD-HHMM-nightly, -beta or -release.
  * Pressed a few times in a row, as Android's version is, it opens the easter egg, a falling
  * blocks game played with the wheel; the side button presses it, so the presses may be slower
  * than taps.
