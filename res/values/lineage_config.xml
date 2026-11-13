@@ -55,4 +55,15 @@
     <!-- Whether the display size preference should allow separate DPI settings for each display
          on foldables by having the display size slider only affect the default display. -->
     <bool name="config_independent_display_dpi_setting">false</bool>
+
+    <!-- The system property that holds the built-in speaker's gain in dB, for the slider in
+         Sound. Empty: no slider. A gain that equals the default is stored as an empty value. -->
+    <string name="config_speaker_gain_property" translatable="false"></string>
+    <!-- A property written with a fresh value after the gain changed, for the device to put it
+         in. Empty: none. -->
+    <string name="config_speaker_gain_apply_property" translatable="false"></string>
+    <!-- The slider's range and the device's default gain, in dB -->
+    <integer name="config_speaker_gain_min">0</integer>
+    <integer name="config_speaker_gain_max">0</integer>
+    <integer name="config_speaker_gain_default">0</integer>
 </resources>

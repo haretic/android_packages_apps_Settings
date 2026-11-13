@@ -52,6 +52,14 @@
             settings:userRestriction="no_adjust_volume"
             settings:controller="com.android.settings.notification.MediaVolumePreferenceController"/>
 
+        <!-- Speaker gain, on devices that have it (config_speaker_gain_property) -->
+        <com.android.settingslib.widget.SliderPreference
+            android:key="speaker_gain"
+            android:title="@string/speaker_gain_title"
+            android:order="-175"
+            android:persistent="false"
+            settings:controller="com.android.settings.sound.SpeakerGainPreferenceController"/>
+
         <!-- Call volume -->
         <com.android.settings.sound.VolumeSliderPreference
             android:key="call_volume"
