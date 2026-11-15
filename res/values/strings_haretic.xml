@@ -6,4 +6,7 @@
     <!-- Sound: the slider for the built-in speaker's gain -->
     <string name="speaker_gain_title">Speaker gain (Hardware)</string>
     <string name="speaker_gain_summary">%+d dB</string>
+    <!-- Sound: switch for the sounds the wheel makes in the system's own parts [CHAR LIMIT=40] -->
+    <string name="wheel_sounds_title">Wheel sounds</string>
+    <string name="wheel_sounds_summary">Steps, presses, list ends and switches</string>
 </resources>

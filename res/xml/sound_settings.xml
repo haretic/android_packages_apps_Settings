@@ -238,6 +238,15 @@
             android:title="@string/touch_sounds_title"
             android:order="-30"/>
 
+        <!-- haretic: the wheel's own sounds, played by the system's parts while touch sounds are on -->
+        <lineageos.preference.LineageSecureSettingSwitchPreference
+            android:key="wheel_taskbar_sounds"
+            android:title="@string/wheel_sounds_title"
+            android:summary="@string/wheel_sounds_summary"
+            android:defaultValue="true"
+            android:dependency="sound_effects_enabled"
+            android:order="-29"/>
+
         <!-- Show vibrate icon in status bar -->
         <SwitchPreferenceCompat
             android:key="vibrate_icon"
