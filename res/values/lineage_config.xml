@@ -66,4 +66,9 @@
     <integer name="config_speaker_gain_min">0</integer>
     <integer name="config_speaker_gain_max">0</integer>
     <integer name="config_speaker_gain_default">0</integer>
+    <!-- The system property that switches the built-in speaker's tone correction (0 or 1).
+         Empty: the device has none and Sound settings shows no switch. -->
+    <string name="config_speaker_tone_property" translatable="false"></string>
+    <!-- Whether the correction is on while that property is empty -->
+    <bool name="config_speaker_tone_default">false</bool>
 </resources>

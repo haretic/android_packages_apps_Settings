@@ -60,6 +60,15 @@
             android:persistent="false"
             settings:controller="com.android.settings.sound.SpeakerGainPreferenceController"/>
 
+        <!-- Speaker tone correction, on devices that have it (config_speaker_tone_property) -->
+        <SwitchPreferenceCompat
+            android:key="speaker_tone"
+            android:title="@string/speaker_tone_title"
+            android:summary="@string/speaker_tone_summary"
+            android:order="-174"
+            android:persistent="false"
+            settings:controller="com.android.settings.sound.SpeakerTonePreferenceController"/>
+
         <!-- Call volume -->
         <com.android.settings.sound.VolumeSliderPreference
             android:key="call_volume"
